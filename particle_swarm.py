@@ -11,7 +11,8 @@ configure_logging()
 logging.debug("Start")
 
 class ParticleSwarm:
-    def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, max_iteration: int = 100):
+    def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
+                max_iteration: int = 100, mean_iteration: int = 100, iteration_multiplier: float = 0.001):
         """
         Parameters
         ----------
@@ -41,6 +42,8 @@ class ParticleSwarm:
         self.c_g = c_global
         self.iteration = 0
         self.max_iteration = max_iteration
+        self.mean_iteration = mean_iteration
+        self.multiplier = iteration_multiplier
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
         logger.debug(f"local_best_positions={self.l_best_X}")
@@ -80,11 +83,23 @@ class ParticleSwarm:
     def update_omega_randomly(self):
         self.w = np.random.random()
 
-    def update_omega_iteration(self):
+    def update_omega_max_iteration(self):
         self.w = 1 - self.iteration / self.max_iteration * 0.5
+
+    def update_omega_mean_iteration(self):
+        self.w = 1 - self.iteration / self.mean_iteration * 0.5
+
+    def update_omega_iteration(self):
+        self.w = 1 - self.iteration * self.multiplier
 
     def set_update_omega_randomly(self):
         self.update_omega = self.update_omega_randomly
+
+    def set_update_omega_max_iteration(self):
+        self.update_omega = self.update_omega_max_iteration
+
+    def set_update_omega_mean_iteration(self):
+        self.update_omega = self.update_omega_mean_iteration
 
     def set_update_omega_iteration(self):
         self.update_omega = self.update_omega_iteration

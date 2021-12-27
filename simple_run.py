@@ -1,13 +1,22 @@
-import numpy as np
-
 from particle_swarm import ParticleSwarm
+from test_functions import hypersphere_v, easom_v, himmelblau_v, schwefel_v
 
 
-def f(x,y):
-    "Objective function"
-    return (x-3.14)**2 + (y-2.72)**2 + np.sin(3*x+1.41) + np.sin(4*y-1.73)
+p = ParticleSwarm(20, hypersphere_v)
+for i in range(20):
+    p.update()
 
 
-p = ParticleSwarm(20, f)
+p = ParticleSwarm(20, easom_v)
+for i in range(20):
+    p.update()
+
+
+p = ParticleSwarm(20, himmelblau_v)
+for i in range(20):
+    p.update()
+
+
+p = ParticleSwarm(20, schwefel_v)
 for i in range(20):
     p.update()

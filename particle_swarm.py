@@ -6,6 +6,7 @@ from logger import configure_logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+#configure_logging()
 
 logging.debug("Start")
 

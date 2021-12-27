@@ -6,7 +6,7 @@ from logger import configure_logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-#configure_logging()
+configure_logging()
 
 logging.debug("Start")
 
@@ -57,6 +57,7 @@ class ParticleSwarm:
         animate: bool
             flaga mówiąca o tym czy powinniśmy utworzyć animowany GIF prezentujący przebieg algorytmu
         """
+        self.update_omega()
         r1, r2 = np.random.rand(2)
         self.V = self.w * self.V \
                  + self.c_l * r1 * (self.l_best_X - self.X) \
@@ -68,25 +69,32 @@ class ParticleSwarm:
         self.g_best_X = self.l_best_X[:, self.l_best_vals.argmin()]
         self.g_best_vals = self.l_best_vals.min()
         self.add_g_best_val()
-
         self.iteration += 1
         logger.info(f"Iteration: {self.iteration}")
         logger.info(f"global_best_position={self.g_best_X}")
         logger.info(f"global_best_value={self.g_best_vals}")
-        logger.info(f"size={len(self.last_g_best_vals)}")
+
+    def update_omega(self):
+        pass
 
     def update_omega_randomly(self):
         self.w = np.random.random()
 
     def update_omega_iteration(self):
-        self.w = 1 - self.iteration / self.max_iteration
+        self.w = 1 - self.iteration / self.max_iteration * 0.5
+
+    def set_update_omega_randomly(self):
+        self.update_omega = self.update_omega_randomly
+
+    def set_update_omega_iteration(self):
+        self.update_omega = self.update_omega_iteration
 
     def add_g_best_val(self):
         if len(self.last_g_best_vals) == 10:
             del self.last_g_best_vals[0]
         self.last_g_best_vals.append(self.g_best_vals)
 
-    def stop_condition_iteration(self):
+    def stop_condition_max_iteration(self):
         return self.iteration <= self.max_iteration
 
     def stop_condition_best_value(self):

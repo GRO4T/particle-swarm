@@ -110,7 +110,7 @@ class ParticleSwarm:
         self.last_g_best_vals.append(self.g_best_vals)
 
     def stop_condition_max_iteration(self):
-        return self.iteration <= self.max_iteration
+        return self.iteration < self.max_iteration
 
     def stop_condition_best_value(self):
         if len(self.last_g_best_vals) < 10:

@@ -2,8 +2,9 @@ import time
 from particle_swarm import ParticleSwarm
 from test_functions import hypersphere_v, easom_v, himmelblau_v, schwefel_v
 
-NUM_OF_TESTS = 2000
-NUM_OF_PARTICLES = 50
+NUM_OF_TESTS = 5
+NUM_OF_PARTICLES = 100
+MAX_ITERATION = 1000
 
 stream = print
 
@@ -27,12 +28,12 @@ def experiments_basic(name, func_v):
     stop = time.perf_counter()
     print_stats(name, global_mins, iterations, stop, start)
 
-def experiments_basic_max_iteration(name, func_v, max_iteration):
+def experiments_basic_max_iteration(name, func_v):
     iterations = list()
     global_mins = list()
     start = time.perf_counter()
     for i in range(NUM_OF_TESTS):
-        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, max_iteration=max_iteration)
+        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, max_iteration=MAX_ITERATION)
         while p.stop_condition_max_iteration():
             p.update()
         iterations.append(p.iteration)
@@ -55,14 +56,14 @@ def experiments_randomly(name, func_v):
     stop = time.perf_counter()
     print_stats(name, global_mins, iterations, stop, start)
 
-def experiments_randomly_max_iteration(name, func_v, max_iteration):
+def experiments_randomly_max_iteration(name, func_v):
     iterations = list()
     global_mins = list()
     start = time.perf_counter()
     for i in range(NUM_OF_TESTS):
-        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, max_iteration=max_iteration)
+        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, max_iteration=MAX_ITERATION)
         p.set_update_omega_randomly()
-        while p.stop_condition_best_value():
+        while p.stop_condition_max_iteration():
             p.update()
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
@@ -83,21 +84,21 @@ def experiments_iteration(name, func_v, iteration_multiplier):
     stop = time.perf_counter()
     print_stats(name, global_mins, iterations, stop, start)
 
-def experiments_iteration_max_iteration(name, func_v, iteration_multiplier, max_iteration):
+def experiments_iteration_max_iteration(name, func_v, iteration_multiplier):
     iterations = list()
     global_mins = list()
     start = time.perf_counter()
     for i in range(NUM_OF_TESTS):
-        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, iteration_multiplier=iteration_multiplier, max_iteration=max_iteration)
+        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, iteration_multiplier=iteration_multiplier, max_iteration=MAX_ITERATION)
         p.set_update_omega_iteration()
-        while p.stop_condition_best_value():
+        while p.stop_condition_max_iteration():
             p.update()
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
     print_stats(name, global_mins, iterations, stop, start)
 
-def experiments_max_iteration(name, func_v, max_iteration):
+def experiments_max_iteration(name, func_v, max_iteration=MAX_ITERATION):
     iterations = list()
     global_mins = list()
     start = time.perf_counter()

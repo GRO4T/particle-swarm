@@ -3,7 +3,14 @@ from particle_swarm import ParticleSwarm
 from test_functions import hypersphere_v, easom_v, himmelblau_v, schwefel_v
 
 NUM_OF_TESTS = 2000
-NUM_OF_PARTICLES = 20
+NUM_OF_PARTICLES = 50
+
+def print_stats(name, global_mins, iterations, stop, start):
+    print(f"{name} function:")
+    print(f"Total time: {stop - start:0.4f} seconds")
+    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
+    print(f"Average iterations of algorithm: {sum(iterations) / len(iterations)} iterations")
+    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
 
 def experiments_basic(name, func_v):
     iterations = list()
@@ -16,9 +23,8 @@ def experiments_basic(name, func_v):
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
-    print(f"{name} function : {sum(iterations) / len(iterations)} iterations in {stop - start:0.4f} seconds")
-    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
-    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
+    print_stats(name, global_mins, iterations, stop, start)
+    
 
 def experiments_randomly(name, func_v):
     iterations = list()
@@ -32,9 +38,7 @@ def experiments_randomly(name, func_v):
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
-    print(f"{name} function : {sum(iterations) / len(iterations)} iterations in {stop - start:0.4f} seconds")
-    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
-    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
+    print_stats(name, global_mins, iterations, stop, start)
 
 def experiments_iteration(name, func_v, iteration_multiplier):
     iterations = list()
@@ -48,9 +52,7 @@ def experiments_iteration(name, func_v, iteration_multiplier):
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
-    print(f"{name} function : {sum(iterations) / len(iterations)} iterations in {stop - start:0.4f} seconds")
-    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
-    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
+    print_stats(name, global_mins, iterations, stop, start)
 
 def experiments_max_iteration(name, func_v, max_iteration):
     iterations = list()
@@ -64,9 +66,7 @@ def experiments_max_iteration(name, func_v, max_iteration):
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
-    print(f"{name} function : {sum(iterations) / len(iterations)} iterations in {stop - start:0.4f} seconds")
-    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
-    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
+    print_stats(name, global_mins, iterations, stop, start)
 
 def experiments_mean_iteration(name, func_v, mean_iteration):
     iterations = list()
@@ -80,7 +80,5 @@ def experiments_mean_iteration(name, func_v, mean_iteration):
         iterations.append(p.iteration)
         global_mins.append(p.g_best_vals)
     stop = time.perf_counter()
-    print(f"{name} function : {sum(iterations) / len(iterations)} iterations in {stop - start:0.4f} seconds")
-    print(f"Found global minimum: {sum(global_mins) / len(global_mins)}")
-    print(f"Average time of algorithm: {(stop - start) / NUM_OF_TESTS:0.4f} seconds")
+    print_stats(name, global_mins, iterations, stop, start)
 

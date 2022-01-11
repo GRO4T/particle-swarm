@@ -125,15 +125,19 @@ class ParticleSwarm:
 
     def update_omega_randomly(self):
         self.w = np.random.uniform(0, 2.5)
+        logger.debug(f"w={self.w}")
 
     def update_omega_max_iteration(self):
-        self.w = 1 - self.iteration / self.max_iteration * 0.5
+        self.w = 1 - self.multiplier * (self.iteration / self.max_iteration * 0.5)
+        logger.debug(f"w={self.w}")
 
     def update_omega_mean_iteration(self):
         self.w = 1 - self.iteration / self.mean_iteration * 0.5
+        logger.debug(f"w={self.w}")
 
     def update_omega_iteration(self):
         self.w = 1 - self.iteration * self.multiplier
+        logger.debug(f"w={self.w}")
 
     def set_update_omega_randomly(self):
         self.update_omega = self.update_omega_randomly

@@ -67,22 +67,26 @@ def experiments1():
 def main():
     np.random.seed(100)
 
+    print(f"Animation {SCHWEFEL}")
     p = ParticleSwarm(100, schwefel_v)
     p.set_animation_params(750, 750)
     p.prepare_animation()
     p.set_update_omega_randomly()
     p.animation(SCHWEFEL + ".gif", 300)
 
+    print(f"Animation {HYPERSPHERE}")
     p = ParticleSwarm(50, hypersphere_v)
     p.set_animation_params(10, 10)
     p.prepare_animation()
     p.animation(HYPERSPHERE + ".gif", 100)
 
+    print(f"Animation {HIMMELBLAU}")
     p = ParticleSwarm(50, himmelblau_v)
     p.set_animation_params(5, 5)
     p.prepare_animation()
     p.animation(HIMMELBLAU + ".gif", 100)
 
+    print(f"Animation {EASOM}")
     p = ParticleSwarm(50, easom_v)
     p.set_animation_params(10, 10)
     p.prepare_animation()

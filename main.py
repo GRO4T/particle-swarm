@@ -10,9 +10,7 @@ EASOM = "EASOM"
 HIMMELBLAU = "HIMMELBLAU"
 SCHWEFEL = "SCHWEFEL"
 
-def main():
-    np.random.seed(100)
-    
+def experiments1():
     print("Basic experiments:")
     experiments_basic(HYPERSPHERE, hypersphere_v)
     experiments_basic(EASOM, easom_v)
@@ -64,6 +62,32 @@ def main():
     experiments_max_iteration(EASOM, easom_v, 1000)
     experiments_max_iteration(HIMMELBLAU, himmelblau_v, 1000)
     experiments_max_iteration(SCHWEFEL, schwefel_v, 1000)
+
+
+def main():
+    np.random.seed(100)
+
+    p = ParticleSwarm(100, schwefel_v)
+    p.set_animation_params(750, 750)
+    p.prepare_animation()
+    p.set_update_omega_randomly()
+    p.animation(SCHWEFEL + ".gif", 300)
+
+    p = ParticleSwarm(50, hypersphere_v)
+    p.set_animation_params(10, 10)
+    p.prepare_animation()
+    p.animation(HYPERSPHERE + ".gif", 100)
+
+    p = ParticleSwarm(50, himmelblau_v)
+    p.set_animation_params(5, 5)
+    p.prepare_animation()
+    p.animation(HIMMELBLAU + ".gif", 100)
+
+    p = ParticleSwarm(50, easom_v)
+    p.set_animation_params(10, 10)
+    p.prepare_animation()
+    p.animation(EASOM + ".gif", 100)
+    
     
 if __name__ == '__main__':
     main()

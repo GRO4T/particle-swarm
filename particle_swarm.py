@@ -1,5 +1,7 @@
 import numpy as np
 import logging
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 from logger import configure_logging
 
@@ -53,6 +55,30 @@ class ParticleSwarm:
         logger.debug(type(self.g_best_X))
         logger.debug(type(self.g_best_vals))
 
+    def prepare_animation(self):
+        self.x, self.y = np.array(np.meshgrid(np.linspace(-self.xlim,self.xlim,400), np.linspace(-self.ylim,self.ylim,400)))
+        z = np.array(self.obj_func(self.x, self.y), dtype=np.float64)
+        self.x_min = self.x.ravel()[z.argmin()]
+        self.y_min = self.y.ravel()[z.argmin()]
+
+        self.fig, self.ax = plt.subplots(figsize=(8,6))
+        self.fig.set_tight_layout(True)
+        img = self.ax.imshow(z, extent=[-self.xlim, self.xlim, -self.ylim, self.ylim], origin='lower', cmap='viridis', alpha=0.5)
+        self.fig.colorbar(img, ax=self.ax)
+        self.ax.plot([self.x_min], [self.y_min], marker='x', markersize=5, color="white")
+        contours = self.ax.contour(self.x, self.y, z, 10, colors='black', alpha=0.4)
+        self.ax.clabel(contours, inline=True, fontsize=8, fmt="%.0f")
+        self.pbest_plot = self.ax.scatter(self.l_best_X [0], self.l_best_X[1], marker='o', color='black', alpha=0.5)
+        self.p_plot = self.ax.scatter(self.X[0], self.X[1], marker='o', color='blue', alpha=0.5)
+        self.p_arrow = self.ax.quiver(self.X[0], self.X[1], self.V[0], self.V[1], color='blue', width=0.005, angles='xy', scale_units='xy', scale=1)
+        self.gbest_plot = plt.scatter([self.g_best_X[0]], [self.g_best_X[1]], marker='*', s=100, color='black', alpha=0.4)
+        self.ax.set_xlim([-self.xlim,self.xlim])
+        self.ax.set_ylim([-self.ylim,self.ylim])
+
+    def set_animation_params(self, xlim, ylim):
+        self.xlim = xlim
+        self.ylim = ylim
+
     def update(self, animate: bool = False):
         """
         Parameters
@@ -77,11 +103,28 @@ class ParticleSwarm:
         logger.info(f"global_best_position={self.g_best_X}")
         logger.info(f"global_best_value={self.g_best_vals}")
 
+    def animate(self, i):
+        title = 'Iteration {:02d}'.format(i)
+        self.update()
+        self.ax.set_title(title)
+        self.pbest_plot.set_offsets(self.l_best_X.T)
+        self.p_plot.set_offsets(self.X.T)
+        self.p_arrow.set_offsets(self.X.T)
+        self.p_arrow.set_UVC(self.V[0], self.V[1])
+        self.gbest_plot.set_offsets(self.g_best_X.reshape(1,-1))
+        return self.ax, self.pbest_plot, self.p_plot, self.p_arrow, self.gbest_plot
+
+    def animation(self, path, frames):
+        anim = FuncAnimation(self.fig, self.animate, frames=list(range(1,frames)), interval=500, blit=False, repeat=True)
+        #anim.save("PSO.gif", dpi=120, writer="imagemagick")
+        my_writer=PillowWriter(fps=5, codec='libx264', bitrate=2)
+        anim.save(filename=path, writer=my_writer)
+
     def update_omega(self):
         pass
 
     def update_omega_randomly(self):
-        self.w = np.random.random()
+        self.w = np.random.uniform(0, 2.5)
 
     def update_omega_max_iteration(self):
         self.w = 1 - self.iteration / self.max_iteration * 0.5

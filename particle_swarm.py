@@ -8,9 +8,7 @@ from logger import configure_logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-configure_logging()
 
-logging.debug("Start")
 
 class ParticleSwarm:
     def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
@@ -50,8 +48,8 @@ class ParticleSwarm:
         logger.debug(f"velocities={self.V}")
         logger.debug(f"local_best_positions={self.l_best_X}")
         logger.debug(f"local_best_values={self.l_best_vals}")
-        logger.info(f"global_best_position={self.g_best_X}")
-        logger.info(f"global_best_value={self.g_best_vals}")
+        logger.debug(f"global_best_position={self.g_best_X}")
+        logger.debug(f"global_best_value={self.g_best_vals}")
         logger.debug(type(self.g_best_X))
         logger.debug(type(self.g_best_vals))
 
@@ -79,13 +77,7 @@ class ParticleSwarm:
         self.xlim = xlim
         self.ylim = ylim
 
-    def update(self, animate: bool = False):
-        """
-        Parameters
-        ----------
-        animate: bool
-            flaga mówiąca o tym czy powinniśmy utworzyć animowany GIF prezentujący przebieg algorytmu
-        """
+    def update(self):
         self.update_omega()
         r1, r2 = np.random.rand(2)
         self.V = self.w * self.V \
@@ -99,9 +91,9 @@ class ParticleSwarm:
         self.g_best_vals = self.l_best_vals.min()
         self.add_g_best_val()
         self.iteration += 1
-        logger.info(f"Iteration: {self.iteration}")
-        logger.info(f"global_best_position={self.g_best_X}")
-        logger.info(f"global_best_value={self.g_best_vals}")
+        logger.debug(f"Iteration: {self.iteration}")
+        logger.debug(f"global_best_position={self.g_best_X}")
+        logger.debug(f"global_best_value={self.g_best_vals}")
 
     def animate(self, i):
         title = 'Iteration {:02d}'.format(i)
@@ -116,7 +108,6 @@ class ParticleSwarm:
 
     def animation(self, path, frames):
         anim = FuncAnimation(self.fig, self.animate, frames=list(range(1,frames)), interval=500, blit=False, repeat=True)
-        #anim.save("PSO.gif", dpi=120, writer="imagemagick")
         my_writer=PillowWriter(fps=5, codec='libx264', bitrate=2)
         anim.save(filename=path, writer=my_writer)
 
@@ -163,5 +154,3 @@ class ParticleSwarm:
         if len(self.last_g_best_vals) < 10:
             return True
         return abs(sum(self.last_g_best_vals) / 10 - self.g_best_vals) >= 0.000000001
-
-

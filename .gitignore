@@ -3,3 +3,6 @@
 *.log
 *.gif
 *.pyc
+gifs/*
+logs/*
+graphs/*

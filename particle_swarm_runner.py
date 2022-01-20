@@ -43,13 +43,13 @@ class ParticleSwarmRunner:
 		self.parser.add_argument("--omega_policy", type=str, help="Omega update policy", required=True)
 		self.parser.add_argument("--max_iteration", type=int, help="Maksymalna liczba iteracji")
 		self.parser.add_argument("--mult", type=float, help="Multiplier", default=0.001)
-		self.parser.add_argument("--mult_glob", type=float, help="Multiplier global minimum", default=0.001)
-		self.parser.add_argument("--start_pos", type=int, help="The distance from the point (0, 0) at which the particles can appear at start", default=5)
+		self.parser.add_argument("--limit", type=int, help="The distance from the point (0, 0) at which the particles can appear at start", default=5)
 
 		self.parser.add_argument("--test", help="Perform test (multiple runs) and show summary", action="store_true")
 		self.parser.add_argument("--tests", type=int, help="Number of tests", default=5)
 
 		self.parser.add_argument("--graph", help="Generate execution graph of a single run", action="store_true")
+		self.parser.add_argument("--graph_omega", help="Generate omega graph of a single run", action="store_true")
 
 		self.parser.add_argument("--gif", help="Generate a GIF of a single run. Additional values required xlim and ylim, e.g. --gif 750 750", nargs=2)
 		self.parser.add_argument("--frames", type=int, help="Number of frames to generate")
@@ -98,8 +98,8 @@ class ParticleSwarmRunner:
 		return int(self.args.gif[1])
 
 	@property
-	def start_pos(self) -> int:
-		return int(self.args.start_pos)
+	def limit(self) -> int:
+		return int(self.args.limit)
 
 	def run(self):
 		if self.args.test:
@@ -117,10 +117,9 @@ class ParticleSwarmRunner:
 		global_mins = list()
 		start = time.perf_counter()
 		for i in range(self.args.tests):
-			p = ParticleSwarm(n_particles=self.particles,
+			p = ParticleSwarm(n_particles=self.particles, multiplier=self.args.mult,
 						  		objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  		iteration_multiplier=self.args.mult, global_multiplier=self.args.mult_glob,
-								max_iteration=self.args.max_iteration, pos=self.start_pos)
+						  		max_iteration=self.args.max_iteration, limit=self.limit)
 			ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 			while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 				p.update()
@@ -132,8 +131,7 @@ class ParticleSwarmRunner:
 	def animate(self):
 		logger.info(f"[ANIMATE] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(self.particles, ParticleSwarmRunner.obj_functions[self.obj_func], 
-							iteration_multiplier=self.args.mult, global_multiplier=self.args.mult_glob,
-							pos=self.start_pos)
+							multiplier=self.args.mult, limit=self.limit)
 		p.set_animation_params(self.xlim, self.ylim)
 		p.prepare_animation()
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
@@ -143,15 +141,16 @@ class ParticleSwarmRunner:
 
 	def graph(self):
 		global_mins = []
+		omegas = []
 		logger.info(f"[GRAPH] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(n_particles=self.particles,
 						  	objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  	iteration_multiplier=self.args.mult, global_multiplier=self.args.mult_glob,
-							pos=self.start_pos)
+						  	multiplier=self.args.mult, limit=self.limit, max_iteration=self.args.max_iteration)
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 		while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 			p.update()
 			global_mins.append(p.g_best_vals)
+			omegas.append(p.w)
 
 		x = range(p.iteration)
 		y = global_mins
@@ -163,10 +162,23 @@ class ParticleSwarmRunner:
 		path = f"graphs/{self.filename_base}.png"
 		plt.savefig(path)
 		print(f"Graph in: {path}")
+		plt.clf()
+
+		if self.args.graph_omega:
+			self.graph_omega(x, omegas)
 
 		logger.debug(f"iterations={p.iteration}")
 		logger.debug(f"global_mins={global_mins}")
 		logger.debug(f"len(global_mins)={len(global_mins)}")
+
+	def graph_omega(self, x, y):
+		plt.plot(x, y)
+		plt.xlabel("Iteracje")
+		plt.ylabel("Wartość omega")
+		plt.title(f"Wykres wartości omega\nobj_func: {self.obj_func} omega_policy: {self.omega_policy} stop_cond: {self.stop_cond}")
+		path = f"graphs/omega_{self.filename_base}.png"
+		plt.savefig(path)
+		print(f"Omega graph in: {path}")
 
 	def summary(self, global_mins, iterations, stop, start):
 		logger.info(f"[SUMMARY] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")

@@ -3,8 +3,6 @@ import logging
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 
-from logger import configure_logging
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -12,8 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 class ParticleSwarm:
     def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
-                max_iteration: int = 100, mean_iteration: int = 100, iteration_multiplier: float = 0.001, 
-                global_multiplier: float = 0.1, pos: int = 5):
+                max_iteration: int = 100, mean_iteration: int = 100, multiplier: float = 0.001, limit: int = 5):
         """
         Parameters
         ----------
@@ -29,30 +26,30 @@ class ParticleSwarm:
             współczynnik przyciągania do globalengo rozwiązania
         max_iteration: int
             maksymalna liczba iteracji algorytmu
-        iteration_multiplier: float
-            współczynnik przez który mnożony jest numer iteracji
-            podczas zmieniania wawrtości omega na podstawie
-            numeru iteracji
-        pos: int
+        multiplier: float
+            ogólny współczynnik. Używany w funkcjach aktualizujących wartość omega.
+        limit: int
             odległość od punktu (0, 0) na której mogą pojawić się
             cząsteczki na początku algorytmu
         """
-        self.X = np.random.uniform(-pos, pos, (2, n_particles))
-        self.V = np.random.randn(2, n_particles) * 0.1
-        self.obj_func = objective_func
-        self.l_best_X = self.X 
-        self.l_best_vals = self.obj_func(self.X[0], self.X[1]) 
-        self.g_best_X = self.l_best_X[:, self.l_best_vals.argmin()]
-        self.g_best_vals = self.l_best_vals.min()
-        self.last_g_best_vals = list()
+        self.limit = limit                                              # odległość od punktu (0, 0) na której mogą pojawić się cząsteczki na początku algorytmu
+        self.X = np.random.uniform(-limit, limit, (2, n_particles))     # wektor współrzędnych
+        self.V = np.random.randn(2, n_particles) * 0.1                  # wektor prędkości
+        self.obj_func = objective_func                                  # funkcja celu
+        self.l_best_X = self.X                                          # współrzędne minimum lokalnego
+        self.l_best_vals = self.obj_func(self.X[0], self.X[1])          # wartość funkjcji celu minimum lokalnego
+        self.g_best_X = self.l_best_X[:, self.l_best_vals.argmin()]     # współrzędne minimum globalego
+        self.g_best_vals = self.l_best_vals.min()                       # wartość funkcji celu minimum globalnego
+        self.last_g_best_vals = list()                                  # wartości poprzednich minimów globalnych
+        self.iteration = 0                                              # licznik iteracji
+
+        # współczynniki
         self.w = w
         self.c_l = c_local
         self.c_g = c_global
-        self.iteration = 0
         self.max_iteration = max_iteration
-        self.mean_iteration = mean_iteration
-        self.multiplier = iteration_multiplier
-        self.global_multiplier = global_multiplier
+        self.mean_iteration = mean_iteration # ????
+        self.multiplier = multiplier
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
         logger.debug(f"local_best_positions={self.l_best_X}")
@@ -93,6 +90,7 @@ class ParticleSwarm:
                  + self.c_l * r1 * (self.l_best_X - self.X) \
                  + self.c_g * r2 * (self.g_best_X.reshape(-1, 1) - self.X)
         self.X = self.X + self.V
+        self.X = np.clip(self.X, a_min=-self.limit, a_max=self.limit)
         new_obj_func_vals = self.obj_func(self.X[0], self.X[1])
         self.l_best_X[:, (self.l_best_vals >= new_obj_func_vals)] = self.X[:, (self.l_best_vals >= new_obj_func_vals)]
         self.l_best_vals = np.array([self.l_best_vals, new_obj_func_vals]).min(axis=0)
@@ -146,7 +144,7 @@ class ParticleSwarm:
 
     def update_omega_global_minimum_max_iteration(self):
         dist = np.linalg.norm(self.g_best_X - np.array([np.mean(self.X[0]), np.mean(self.X[1])]))
-        self.w = dist * (self.iteration / self.max_iteration) * self.global_multiplier
+        self.w = dist * (self.iteration / self.max_iteration) * self.multiplier
         logger.debug(f"w={self.w}")
 
     def set_update_omega_randomly(self):

@@ -26,6 +26,7 @@ class ParticleSwarmRunner:
 		"random": lambda p: p.set_update_omega_randomly(),
 		"iteration": lambda p: p.set_update_omega_iteration(),
 		"max_iteration": lambda p: p.set_update_omega_max_iteration(),
+		"global_minimum": lambda p: p.set_update_omega_global_minimum(),
 	}
 
 	stop_conditions = {
@@ -41,6 +42,7 @@ class ParticleSwarmRunner:
 		self.parser.add_argument("--omega_policy", type=str, help="Omega update policy", required=True)
 		self.parser.add_argument("--max_iteration", type=int, help="Maksymalna liczba iteracji")
 		self.parser.add_argument("--mult", type=float, help="Multiplier", default=0.001)
+		self.parser.add_argument("--start_pos", type=int, help="The distance from the point (0, 0) at which the particles can appear at start", default=5)
 
 		self.parser.add_argument("--test", help="Perform test (multiple runs) and show summary", action="store_true")
 		self.parser.add_argument("--tests", type=int, help="Number of tests", default=5)
@@ -93,6 +95,10 @@ class ParticleSwarmRunner:
 	def ylim(self) -> int:
 		return int(self.args.gif[1])
 
+	@property
+	def start_pos(self) -> int:
+		return int(self.args.start_pos)
+
 	def run(self):
 		if self.args.test:
 			self.test()
@@ -112,7 +118,7 @@ class ParticleSwarmRunner:
 			p = ParticleSwarm(n_particles=self.particles,
 						  		objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
 						  		iteration_multiplier=self.args.mult,
-								max_iteration=self.args.max_iteration)
+								max_iteration=self.args.max_iteration, pos=self.start_pos)
 			ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 			while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 				p.update()
@@ -136,7 +142,7 @@ class ParticleSwarmRunner:
 		logger.info(f"[GRAPH] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(n_particles=self.particles,
 						  	objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  	iteration_multiplier=self.args.mult)
+						  	iteration_multiplier=self.args.mult, pos=self.start_pos)
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 		while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 			p.update()

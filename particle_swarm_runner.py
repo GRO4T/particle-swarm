@@ -97,7 +97,7 @@ class ParticleSwarmRunner:
 
 	@property
 	def start_pos(self) -> int:
-		return int(self.start_pos)
+		return int(self.args.start_pos)
 
 	def run(self):
 		if self.args.test:

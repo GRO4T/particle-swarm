@@ -12,7 +12,8 @@ logger.setLevel(logging.DEBUG)
 
 class ParticleSwarm:
     def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
-                max_iteration: int = 100, mean_iteration: int = 100, iteration_multiplier: float = 0.001, pos: int = 5):
+                max_iteration: int = 100, mean_iteration: int = 100, iteration_multiplier: float = 0.001, 
+                global_multiplier: float = 0.1, pos: int = 5):
         """
         Parameters
         ----------
@@ -51,6 +52,7 @@ class ParticleSwarm:
         self.max_iteration = max_iteration
         self.mean_iteration = mean_iteration
         self.multiplier = iteration_multiplier
+        self.global_multiplier = global_multiplier
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
         logger.debug(f"local_best_positions={self.l_best_X}")
@@ -139,7 +141,12 @@ class ParticleSwarm:
 
     def update_omega_global_minimum(self):
         dist = np.linalg.norm(self.g_best_X - np.array([np.mean(self.X[0]), np.mean(self.X[1])]))
-        self.w = min(dist, 1)
+        self.w = min(dist / 20, 1)
+        logger.debug(f"w={self.w}")
+
+    def update_omega_global_minimum_max_iteration(self):
+        dist = np.linalg.norm(self.g_best_X - np.array([np.mean(self.X[0]), np.mean(self.X[1])]))
+        self.w = dist * (self.iteration / self.max_iteration) * self.global_multiplier
         logger.debug(f"w={self.w}")
 
     def set_update_omega_randomly(self):
@@ -156,6 +163,9 @@ class ParticleSwarm:
 
     def set_update_omega_global_minimum(self):
         self.update_omega = self.update_omega_global_minimum
+
+    def set_update_omega_global_minimum_max_iteration(self):
+        self.update_omega = self.update_omega_global_minimum_max_iteration
 
     def add_g_best_val(self):
         if len(self.last_g_best_vals) == 10:

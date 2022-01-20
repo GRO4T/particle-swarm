@@ -28,6 +28,13 @@ class ParticleSwarm:
             współczynnik przyciągania do globalengo rozwiązania
         max_iteration: int
             maksymalna liczba iteracji algorytmu
+        iteration_multiplier: float
+            współczynnik przez który mnożony jest numer iteracji
+            podczas zmieniania wawrtości omega na podstawie
+            numeru iteracji
+        pos: int
+            odległość od punktu (0, 0) na której mogą pojawić się
+            cząsteczki na początku algorytmu
         """
         self.X = np.random.uniform(-pos, pos, (2, n_particles))
         self.V = np.random.randn(2, n_particles) * 0.1
@@ -133,7 +140,6 @@ class ParticleSwarm:
     def update_omega_global_minimum(self):
         dist = np.linalg.norm(self.g_best_X - np.array([np.mean(self.X[0]), np.mean(self.X[1])]))
         self.w = min(dist, 1)
-        print(f"w={self.w}")
         logger.debug(f"w={self.w}")
 
     def set_update_omega_randomly(self):

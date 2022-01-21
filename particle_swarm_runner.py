@@ -160,7 +160,7 @@ class ParticleSwarmRunner:
 		plt.plot(x, y)
 		plt.xlabel("Iteracje")
 		plt.ylabel("Wartość globalnego minimum")
-		plt.title(f"Przebieg działania algorytmu\nobj_func: {self.obj_func} omega_policy: {self.omega_policy} stop_cond: {self.stop_cond}")
+		plt.title(f"{self.obj_func}(t) {self.omega_policy}")
 		path = f"graphs/{self.filename_base}.png"
 		plt.savefig(path)
 		print(f"Graph in: {path}")
@@ -174,10 +174,12 @@ class ParticleSwarmRunner:
 		logger.debug(f"len(global_mins)={len(global_mins)}")
 
 	def graph_omega(self, x, y):
+		logger.debug(f"omegas={y}")
+
 		plt.plot(x, y)
 		plt.xlabel("Iteracje")
 		plt.ylabel("Wartość omega")
-		plt.title(f"Wykres wartości omega\nobj_func: {self.obj_func} omega_policy: {self.omega_policy} stop_cond: {self.stop_cond}")
+		plt.title(f"omega(t) {self.obj_func} {self.omega_policy}")
 		path = f"graphs/omega_{self.filename_base}.png"
 		plt.savefig(path)
 		print(f"Omega graph in: {path}")

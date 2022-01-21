@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST_NAME="animate"
+TEST_NAME="basic"
 echo "[TEST] $TEST_NAME"
 
 rm ./experiments/$TEST_NAME/*.log
@@ -8,16 +8,20 @@ rm ./experiments/$TEST_NAME/*.gif
 rm ./experiments/$TEST_NAME/*.png
 
 python3 particle_swarm_runner.py --particles 50 --obj_func schwefel --limit 500 \
-								 --gif 500 500 --frames 150 --omega_policy global_minimum
-
-python3 particle_swarm_runner.py --particles 50 --obj_func hypersphere --limit 10 \
-								 --gif 10 10 --frames 150 --omega_policy max_iteration
+								 --stop_cond max_iteration --max_iteration 1000 \
+								 --graph --omega_policy basic
 
 python3 particle_swarm_runner.py --particles 50 --obj_func himmelblau --limit 4 \
-								 --gif 4 4 --frames 150 --omega_policy basic
+								 --stop_cond max_iteration --max_iteration 1000 \
+								 --graph --omega_policy basic
 
 python3 particle_swarm_runner.py --particles 50 --obj_func easom --limit 100 \
-								 --gif 100 100 --frames 150 --omega_policy iteration
+								 --stop_cond max_iteration --max_iteration 1000 \
+								 --graph --omega_policy basic
+
+python3 particle_swarm_runner.py --particles 50 --obj_func hypersphere --limit 4 \
+								 --stop_cond max_iteration --max_iteration 1000 \
+								 --graph --omega_policy basic
 
 mv logs/* 	./experiments/$TEST_NAME/
 mv gifs/*	./experiments/$TEST_NAME/

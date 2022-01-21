@@ -48,7 +48,6 @@ class ParticleSwarm:
         self.c_l = c_local
         self.c_g = c_global
         self.max_iteration = max_iteration
-        self.mean_iteration = mean_iteration # ????
         self.multiplier = multiplier
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
@@ -127,10 +126,6 @@ class ParticleSwarm:
 
     def update_omega_max_iteration(self):
         self.w = 1 - self.multiplier * (self.iteration / self.max_iteration * 0.5)
-        logger.debug(f"w={self.w}")
-
-    def update_omega_mean_iteration(self):
-        self.w = 1 - self.iteration / self.mean_iteration * 0.5
         logger.debug(f"w={self.w}")
 
     def update_omega_iteration(self):

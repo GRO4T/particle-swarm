@@ -39,7 +39,7 @@ class ParticleSwarmRunner:
 		self.parser = argparse.ArgumentParser(description="Runner for particle swarm algorithm")
 		self.parser.add_argument("--particles", type=int, help="Number of particles", required=True)
 		self.parser.add_argument("--obj_func", type=str, help="Objective function", required=True)
-		self.parser.add_argument("--stop_cond", type=str, help="Stop condition", required=True)
+		self.parser.add_argument("--stop_cond", type=str, help="Stop condition")
 		self.parser.add_argument("--omega_policy", type=str, help="Omega update policy", required=True)
 		self.parser.add_argument("--max_iteration", type=int, help="Maksymalna liczba iteracji")
 		self.parser.add_argument("--mult", type=float, help="Multiplier", default=0.001)
@@ -87,7 +87,9 @@ class ParticleSwarmRunner:
 
 	@property
 	def stop_cond(self) -> str:
-		return self.args.stop_cond.lower()
+		if self.args.stop_cond:
+			return self.args.stop_cond.lower()
+		return ""
 
 	@property
 	def xlim(self) -> int:

@@ -75,7 +75,7 @@ def experiments_iteration(name, func_v, iteration_multiplier):
     global_mins = list()
     start = time.perf_counter()
     for i in range(NUM_OF_TESTS):
-        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, iteration_multiplier=iteration_multiplier)
+        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, multiplier=iteration_multiplier)
         p.set_update_omega_iteration()
         while p.stop_condition_best_value():
             p.update()
@@ -89,7 +89,7 @@ def experiments_iteration_max_iteration(name, func_v, iteration_multiplier):
     global_mins = list()
     start = time.perf_counter()
     for i in range(NUM_OF_TESTS):
-        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, iteration_multiplier=iteration_multiplier, max_iteration=MAX_ITERATION)
+        p = ParticleSwarm(NUM_OF_PARTICLES, func_v, multiplier=iteration_multiplier, max_iteration=MAX_ITERATION)
         p.set_update_omega_iteration()
         while p.stop_condition_max_iteration():
             p.update()

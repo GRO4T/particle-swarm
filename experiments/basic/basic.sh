@@ -7,19 +7,19 @@ rm ./experiments/$TEST_NAME/*.log
 rm ./experiments/$TEST_NAME/*.gif
 rm ./experiments/$TEST_NAME/*.png
 
-python3 particle_swarm_runner.py --particles 50 --obj_func schwefel --limit 500 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 1000 \
 								 --graph --omega_policy basic
 
-python3 particle_swarm_runner.py --particles 50 --obj_func himmelblau --limit 4 \
+python3 particle_swarm_runner.py --particles 20 --obj_func himmelblau --limit 4 \
 								 --stop_cond max_iteration --max_iteration 1000 \
 								 --graph --omega_policy basic
 
-python3 particle_swarm_runner.py --particles 50 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
 								 --stop_cond max_iteration --max_iteration 1000 \
 								 --graph --omega_policy basic
 
-python3 particle_swarm_runner.py --particles 50 --obj_func hypersphere --limit 4 \
+python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
 								 --stop_cond max_iteration --max_iteration 1000 \
 								 --graph --omega_policy basic
 

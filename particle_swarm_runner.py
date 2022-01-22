@@ -3,6 +3,7 @@ import time
 import logging
 import datetime
 import matplotlib.pyplot as plt
+import numpy as np
 
 from particle_swarm import ParticleSwarm
 from test_functions import hypersphere_v, easom_v, himmelblau_v, schwefel_v
@@ -36,6 +37,9 @@ class ParticleSwarmRunner:
 	}
 
 	def __init__(self):
+		np.random.seed(100)
+		# np.random.seed(200)
+		# np.random.seed(300)
 		self.parser = argparse.ArgumentParser(description="Runner for particle swarm algorithm")
 		self.parser.add_argument("--particles", type=int, help="Number of particles", required=True)
 		self.parser.add_argument("--obj_func", type=str, help="Objective function", required=True)
@@ -187,8 +191,9 @@ class ParticleSwarmRunner:
 	def summary(self, global_mins, iterations, stop, start):
 		logger.info(f"[SUMMARY] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		logger.info(f"{'Total time':35}: {stop - start:0.4f} seconds")
-		logger.info(f"{'Found global minimum':35}: {sum(global_mins) / len(global_mins)}")
-		logger.info(f"{'Average iterations of algorithm':35}: {sum(iterations) / len(iterations)} iterations")
+		logger.info(f"{'Average global minimum':35}: {sum(global_mins) / len(global_mins)}")
+		logger.info(f"{'Minimal global minimum' :35}: {np.amin(global_mins)}")
+		logger.info(f"{'Maximal global minimum' :35}: {np.amax(global_mins)}")
 		logger.info(f"{'Average time of algorithm':35}: {(stop - start) / self.args.tests:0.4f} seconds")
 
 

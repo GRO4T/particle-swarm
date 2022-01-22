@@ -3,7 +3,16 @@ W ramach projektu będziemy badać zachowanie algorytmu roju cząstek (eng. part
 
 ## Uruchom testy
 ```
-./clean.sh | true && ./experiments/run_all.sh | tee experiments.log
+./clean.sh | true && time ./experiments/run_all.sh | tee experiments.log
+```
+Bez animacji
+```
+./clean.sh | true && time ./experiments/run_all.sh quick | tee experiments.log
+```
+
+## Wyniki stress testu
+```
+grep -r SUMMARY ./experiments/stress_test/*.log
 ```
 
 ## Przykładowe wywołania algorytmu

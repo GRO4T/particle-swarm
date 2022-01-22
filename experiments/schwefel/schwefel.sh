@@ -1,33 +1,33 @@
 #!/bin/bash
 
-TEST_NAME="easom"
+TEST_NAME="schwefel"
 echo "[TEST] $TEST_NAME"
 
 rm ./experiments/$TEST_NAME/*.log
 rm ./experiments/$TEST_NAME/*.gif
 rm ./experiments/$TEST_NAME/*.png
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy basic
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy random 
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy iteration
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy max_iteration --mult 1
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy global_minimum
 
-python3 particle_swarm_runner.py --particles 20 --obj_func easom --limit 100 \
+python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy global_minimum_iteration
 

@@ -32,7 +32,6 @@ class ParticleSwarmRunner:
 
 	stop_conditions = {
 		"max_iteration": lambda p: p.stop_condition_max_iteration(),
-		"best_value": lambda p: p.stop_condition_best_value(),
 	}
 
 	def __init__(self):
@@ -44,9 +43,10 @@ class ParticleSwarmRunner:
 		self.parser.add_argument("--obj_func", type=str, help="Objective function", required=True)
 		self.parser.add_argument("--stop_cond", type=str, help="Stop condition")
 		self.parser.add_argument("--omega_policy", type=str, help="Omega update policy", required=True)
-		self.parser.add_argument("--max_iteration", type=int, help="Maksymalna liczba iteracji")
+		self.parser.add_argument("--max_iteration", type=int, help="Maximum number of iterations")
 		self.parser.add_argument("--mult", type=float, help="Multiplier", default=0.001)
 		self.parser.add_argument("--limit", type=int, help="The distance from the point (0, 0) at which the particles can appear at start", default=5)
+		self.parser.add_argument("--omega", type=float, help="Value of omega", default=0.8)
 
 		self.parser.add_argument("--test", help="Perform test (multiple runs) and show summary", action="store_true")
 		self.parser.add_argument("--tests", type=int, help="Number of tests", default=5)
@@ -124,7 +124,7 @@ class ParticleSwarmRunner:
 		for i in range(self.args.tests):
 			p = ParticleSwarm(n_particles=self.particles, multiplier=self.args.mult,
 						  		objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  		max_iteration=self.args.max_iteration, limit=self.limit)
+						  		max_iteration=self.args.max_iteration, limit=self.limit, w=self.args.omega)
 			ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 			while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 				p.update()
@@ -136,7 +136,7 @@ class ParticleSwarmRunner:
 	def animate(self):
 		logger.info(f"[ANIMATE] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(self.particles, ParticleSwarmRunner.obj_functions[self.obj_func], 
-							multiplier=self.args.mult, limit=self.limit)
+							multiplier=self.args.mult, limit=self.limit, w=self.args.omega)
 		p.set_animation_params(self.xlim, self.ylim)
 		p.prepare_animation()
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
@@ -150,7 +150,7 @@ class ParticleSwarmRunner:
 		logger.info(f"[GRAPH] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(n_particles=self.particles,
 						  	objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  	multiplier=self.args.mult, limit=self.limit, max_iteration=self.args.max_iteration)
+						  	multiplier=self.args.mult, limit=self.limit, max_iteration=self.args.max_iteration, w=self.args.omega)
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 		while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 			p.update()

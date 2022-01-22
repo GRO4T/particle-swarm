@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 class ParticleSwarm:
     def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
-                max_iteration: int = 100, mean_iteration: int = 100, multiplier: float = 0.001, limit: int = 5):
+                max_iteration: int = 100, multiplier: float = 0.001, limit: int = 5):
         """
         Parameters
         ----------
@@ -49,6 +49,7 @@ class ParticleSwarm:
         self.c_g = c_global
         self.max_iteration = max_iteration
         self.multiplier = multiplier
+        logger.debug(f"w={self.w}")
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
         logger.debug(f"local_best_positions={self.l_best_X}")
@@ -143,9 +144,6 @@ class ParticleSwarm:
     def set_update_omega_max_iteration(self):
         self.update_omega = self.update_omega_max_iteration
 
-    def set_update_omega_mean_iteration(self):
-        self.update_omega = self.update_omega_mean_iteration
-
     def set_update_omega_iteration(self):
         self.update_omega = self.update_omega_iteration
 
@@ -159,8 +157,3 @@ class ParticleSwarm:
 
     def stop_condition_max_iteration(self):
         return self.iteration < self.max_iteration
-
-    def stop_condition_best_value(self):
-        if len(self.last_g_best_vals) < 10:
-            return True
-        return abs(sum(self.last_g_best_vals) / 10 - self.g_best_vals) >= 0.000000001

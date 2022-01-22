@@ -9,8 +9,9 @@ logger.setLevel(logging.DEBUG)
 
 
 class ParticleSwarm:
-    def __init__(self, n_particles: int, objective_func, w: float = 0.8, c_local: float = 0.1, c_global: float = 0.1, 
-                max_iteration: int = 100, multiplier: float = 0.001, limit: int = 5):
+    def __init__(self, n_particles: int, objective_func, w: float = 0.8,
+                c_local: float = 0.1, c_global: float = 0.1, 
+                max_iteration: int = 100, limit: int = 5):
         """
         Parameters
         ----------
@@ -26,8 +27,6 @@ class ParticleSwarm:
             współczynnik przyciągania do globalengo rozwiązania
         max_iteration: int
             maksymalna liczba iteracji algorytmu
-        multiplier: float
-            ogólny współczynnik. Używany w funkcjach aktualizujących wartość omega.
         limit: int
             odległość od punktu (0, 0) na której mogą pojawić się
             cząsteczki na początku algorytmu
@@ -48,7 +47,6 @@ class ParticleSwarm:
         self.c_l = c_local
         self.c_g = c_global
         self.max_iteration = max_iteration
-        self.multiplier = multiplier
         logger.debug(f"w={self.w}")
         logger.debug(f"positions={self.X}")
         logger.debug(f"velocities={self.V}")
@@ -125,12 +123,8 @@ class ParticleSwarm:
         self.w = np.random.uniform(0, 1)
         logger.debug(f"w={self.w}")
 
-    def update_omega_max_iteration(self):
-        self.w = 1 - self.multiplier * (self.iteration / self.max_iteration * 0.5)
-        logger.debug(f"w={self.w}")
-
     def update_omega_iteration(self):
-        self.w = 1 - self.iteration * self.multiplier
+        self.w = 1 - (self.iteration / self.max_iteration * 0.5)
         logger.debug(f"w={self.w}")
 
     def update_omega_global_minimum(self):
@@ -140,9 +134,6 @@ class ParticleSwarm:
 
     def set_update_omega_randomly(self):
         self.update_omega = self.update_omega_randomly
-
-    def set_update_omega_max_iteration(self):
-        self.update_omega = self.update_omega_max_iteration
 
     def set_update_omega_iteration(self):
         self.update_omega = self.update_omega_iteration

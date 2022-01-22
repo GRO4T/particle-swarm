@@ -21,10 +21,6 @@ python3 particle_swarm_runner.py --particles 20 --obj_func himmelblau --limit 4 
 
 python3 particle_swarm_runner.py --particles 20 --obj_func himmelblau --limit 4 \
 								 --stop_cond max_iteration --max_iteration 200 \
-								 --graph --graph_omega --omega_policy max_iteration --mult 1
-
-python3 particle_swarm_runner.py --particles 20 --obj_func himmelblau --limit 4 \
-								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy global_minimum
 
 mv logs/* 	./experiments/$TEST_NAME/

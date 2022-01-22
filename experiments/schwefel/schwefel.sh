@@ -13,15 +13,11 @@ python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 
 
 python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
-								 --graph --graph_omega --omega_policy random 
+								 --graph --graph_omega --omega_policy random
 
 python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \
 								 --graph --graph_omega --omega_policy iteration
-
-python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
-								 --stop_cond max_iteration --max_iteration 200 \
-								 --graph --graph_omega --omega_policy max_iteration --mult 1
 
 python3 particle_swarm_runner.py --particles 20 --obj_func schwefel --limit 500 \
 								 --stop_cond max_iteration --max_iteration 200 \

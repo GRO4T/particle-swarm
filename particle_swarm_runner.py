@@ -26,7 +26,6 @@ class ParticleSwarmRunner:
 		"basic": lambda p: None,
 		"random": lambda p: p.set_update_omega_randomly(),
 		"iteration": lambda p: p.set_update_omega_iteration(),
-		"max_iteration": lambda p: p.set_update_omega_max_iteration(),
 		"global_minimum": lambda p: p.set_update_omega_global_minimum(),
 	}
 
@@ -35,6 +34,7 @@ class ParticleSwarmRunner:
 	}
 
 	def __init__(self):
+		# np.random.seed(int(time.time()))
 		np.random.seed(100)
 		# np.random.seed(200)
 		# np.random.seed(300)
@@ -44,9 +44,12 @@ class ParticleSwarmRunner:
 		self.parser.add_argument("--stop_cond", type=str, help="Stop condition")
 		self.parser.add_argument("--omega_policy", type=str, help="Omega update policy", required=True)
 		self.parser.add_argument("--max_iteration", type=int, help="Maximum number of iterations")
-		self.parser.add_argument("--mult", type=float, help="Multiplier", default=0.001)
 		self.parser.add_argument("--limit", type=int, help="The distance from the point (0, 0) at which the particles can appear at start", default=5)
 		self.parser.add_argument("--omega", type=float, help="Value of omega", default=0.8)
+
+		self.parser.add_argument("--c_local", type=float, help="Value of omega", default=0.1)
+		self.parser.add_argument("--c_global", type=float, help="Value of omega", default=0.1)
+
 
 		self.parser.add_argument("--test", help="Perform test (multiple runs) and show summary", action="store_true")
 		self.parser.add_argument("--tests", type=int, help="Number of tests", default=5)
@@ -122,7 +125,7 @@ class ParticleSwarmRunner:
 		global_mins = list()
 		start = time.perf_counter()
 		for i in range(self.args.tests):
-			p = ParticleSwarm(n_particles=self.particles, multiplier=self.args.mult,
+			p = ParticleSwarm(n_particles=self.particles, c_local=self.args.c_local, c_global=self.args.c_global,
 						  		objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
 						  		max_iteration=self.args.max_iteration, limit=self.limit, w=self.args.omega)
 			ParticleSwarmRunner.omega_policies[self.omega_policy](p)
@@ -136,7 +139,7 @@ class ParticleSwarmRunner:
 	def animate(self):
 		logger.info(f"[ANIMATE] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
 		p = ParticleSwarm(self.particles, ParticleSwarmRunner.obj_functions[self.obj_func], 
-							multiplier=self.args.mult, limit=self.limit, w=self.args.omega)
+						  limit=self.limit, w=self.args.omega, c_local=self.args.c_local, c_global=self.args.c_global)
 		p.set_animation_params(self.xlim, self.ylim)
 		p.prepare_animation()
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
@@ -148,9 +151,9 @@ class ParticleSwarmRunner:
 		global_mins = []
 		omegas = []
 		logger.info(f"[GRAPH] {self.obj_func.upper()} (omega_policy: {self.omega_policy} stop_cond: {self.stop_cond})")
-		p = ParticleSwarm(n_particles=self.particles,
+		p = ParticleSwarm(n_particles=self.particles, c_local=self.args.c_local, c_global=self.args.c_global,
 						  	objective_func=ParticleSwarmRunner.obj_functions[self.obj_func],
-						  	multiplier=self.args.mult, limit=self.limit, max_iteration=self.args.max_iteration, w=self.args.omega)
+						  	limit=self.limit, max_iteration=self.args.max_iteration, w=self.args.omega)
 		ParticleSwarmRunner.omega_policies[self.omega_policy](p)
 		while ParticleSwarmRunner.stop_conditions[self.stop_cond](p):
 			p.update()
@@ -194,6 +197,11 @@ class ParticleSwarmRunner:
 		logger.info(f"{'Minimal global minimum' :35}: {np.amin(global_mins)}")
 		logger.info(f"{'Maximal global minimum' :35}: {np.amax(global_mins)}")
 		logger.info(f"{'Average time of algorithm':35}: {(stop - start) / self.args.tests:0.4f} seconds")
+		plt.hist(global_mins, bins="sqrt")
+		path = f"graphs/hist_{self.filename_base}.png"
+		plt.savefig(path)
+		print(f"Histogram in: {path}")
+
 
 
 if __name__ == '__main__':

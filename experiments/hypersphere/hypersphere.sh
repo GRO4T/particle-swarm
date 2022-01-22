@@ -9,7 +9,7 @@ rm ./experiments/$TEST_NAME/*.png
 
 python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
 								 --stop_cond max_iteration --max_iteration 100 \
-								 --graph --graph_omega --omega_policy basic
+								 --graph --graph_omega --omega_policy basic \
 
 python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
 								 --stop_cond max_iteration --max_iteration 100 \
@@ -18,10 +18,6 @@ python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 1
 python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
 								 --stop_cond max_iteration --max_iteration 100 \
 								 --graph --graph_omega --omega_policy iteration
-
-python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
-								 --stop_cond max_iteration --max_iteration 100 \
-								 --graph --graph_omega --omega_policy max_iteration --mult 1
 
 python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
 								 --stop_cond max_iteration --max_iteration 100 \

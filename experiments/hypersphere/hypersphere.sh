@@ -27,10 +27,6 @@ python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 1
 								 --stop_cond max_iteration --max_iteration 100 \
 								 --graph --graph_omega --omega_policy global_minimum
 
-python3 particle_swarm_runner.py --particles 20 --obj_func hypersphere --limit 10 \
-								 --stop_cond max_iteration --max_iteration 100 \
-								 --graph --graph_omega --omega_policy global_minimum_iteration
-
 mv logs/* 	./experiments/$TEST_NAME/
 mv gifs/*	./experiments/$TEST_NAME/
 mv graphs/* ./experiments/$TEST_NAME/

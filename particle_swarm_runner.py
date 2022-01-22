@@ -28,7 +28,6 @@ class ParticleSwarmRunner:
 		"iteration": lambda p: p.set_update_omega_iteration(),
 		"max_iteration": lambda p: p.set_update_omega_max_iteration(),
 		"global_minimum": lambda p: p.set_update_omega_global_minimum(),
-		"global_minimum_iteration": lambda p: p.set_update_omega_global_minimum_max_iteration(),
 	}
 
 	stop_conditions = {

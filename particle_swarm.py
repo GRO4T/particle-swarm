@@ -137,11 +137,6 @@ class ParticleSwarm:
         self.w = min(dist / 20, 1)
         logger.debug(f"w={self.w}")
 
-    def update_omega_global_minimum_max_iteration(self):
-        dist = np.linalg.norm(self.g_best_X - np.array([np.mean(self.X[0]), np.mean(self.X[1])]))
-        self.w = dist * (self.iteration / self.max_iteration) * self.multiplier
-        logger.debug(f"w={self.w}")
-
     def set_update_omega_randomly(self):
         self.update_omega = self.update_omega_randomly
 
@@ -156,9 +151,6 @@ class ParticleSwarm:
 
     def set_update_omega_global_minimum(self):
         self.update_omega = self.update_omega_global_minimum
-
-    def set_update_omega_global_minimum_max_iteration(self):
-        self.update_omega = self.update_omega_global_minimum_max_iteration
 
     def add_g_best_val(self):
         if len(self.last_g_best_vals) == 10:

@@ -198,6 +198,7 @@ class ParticleSwarmRunner:
 		logger.info(f"{'Maximal global minimum' :35}: {np.amax(global_mins)}")
 		logger.info(f"{'Average time of algorithm':35}: {(stop - start) / self.args.tests:0.4f} seconds")
 		plt.hist(global_mins, bins="sqrt")
+		plt.title(f"histogram {self.obj_func} {self.omega_policy}")
 		path = f"graphs/hist_{self.filename_base}.png"
 		plt.savefig(path)
 		print(f"Histogram in: {path}")
